@@ -128,12 +128,12 @@ CREATE TABLE order_details (
 
 -- ---- Admin account ----
 --   Username: admin
---   Password: 123456
--- The value below is the bcrypt hash of "123456", created with
+--   Password: admin000
+-- The value below is the bcrypt hash of "admin000", created with
 -- PHP's password_hash(). The login page checks it using
 -- password_verify(), so the plain password is never stored.
 INSERT INTO admin (username, password) VALUES
-('admin', '$2y$10$NxC.YrNM2k/jeYwRBatvNejq3LrhQdgp27rw7PT03asfhrkImg3/q');
+('admin', '$2y$12$qkcuX0ahrjn9qBHX5M6Tvu9EvWZ4kyCyM/WJETN8DH4Rz6tbSBw52');
 
 -- ---- Categories ----
 INSERT INTO categories (name) VALUES

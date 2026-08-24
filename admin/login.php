@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit" class="btn btn-block">Login</button>
     </form>
 
-    <p class="form-hint">Default login: admin / 123456</p>
+    <p class="form-hint">Default demo login: admin / admin000</p>
     <p class="admin-login-back"><a href="../index.php">&larr; Back to store</a></p>
 </div>
 

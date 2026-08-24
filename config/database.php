@@ -2,35 +2,41 @@
 /*
  * config/database.php
  * ----------------------------------------------------------
- * Creates the connection to the MySQL database.
- * Every page that needs the database includes this file.
+ * Central MySQL Database Connection Configuration
  *
- * We use MySQLi (MySQL Improved) with the default XAMPP settings:
- *   host     = localhost
- *   username = root
- *   password = (empty)
- *   database = ecommerce_db
+ * This file handles database connectivity for the entire application.
+ *
+ * LOCAL XAMPP DEFAULTS:
+ *   - Host:     localhost
+ *   - User:     root
+ *   - Password: (empty)
+ *   - Database: ecommerce_db
+ *
+ * ONLINE HOSTING:
+ *   You can either:
+ *   1. Update the variables below with your hosting database credentials, OR
+ *   2. Set environment variables (DB_HOST, DB_USER, DB_PASS, DB_NAME).
  * ----------------------------------------------------------
  */
 
-// --- Database settings (default XAMPP values) ---
-$db_host = 'localhost';
-$db_user = 'root';
-$db_pass = '';
-$db_name = 'ecommerce_db';
+// Database connection settings
+$db_host = getenv('DB_HOST') !== false ? getenv('DB_HOST') : 'localhost';
+$db_user = getenv('DB_USER') !== false ? getenv('DB_USER') : 'root';
+$db_pass = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '';
+$db_name = getenv('DB_NAME') !== false ? getenv('DB_NAME') : 'ecommerce_db';
 
-// Make MySQLi throw an exception when a query fails.
-// This makes errors easy to see and lets us use try/catch (e.g. at checkout).
+// Make MySQLi throw an exception on errors for structured try/catch handling
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 try {
-    // Open the connection.
+    // Open MySQL database connection
     $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
-    // Use UTF-8 so special characters are stored and shown correctly.
+    // Set charset to utf8mb4 for complete unicode support
     $conn->set_charset('utf8mb4');
 } catch (mysqli_sql_exception $e) {
-    // Friendly message if the database is not ready.
-    die('Database connection failed. Please make sure MySQL is running in XAMPP '
-        . 'and that you have imported database.sql into phpMyAdmin.');
+    // Friendly error message without exposing internal credentials
+    die('Database connection failed. Please make sure MySQL is running '
+        . 'and database credentials in config/database.php are correct.');
 }
+

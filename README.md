@@ -1,268 +1,180 @@
-# ShopEasy – Simple E-Commerce Website
+# ShopEasy – E-Commerce Website
 
-A complete, functional e-commerce website built as a **university Web Programming
-project**. It has a customer side (browse, cart, checkout, orders) and an admin
-side (manage products, categories, orders and customers). Everything runs locally
-on **XAMPP** – no internet, no frameworks, no payment gateways.
+A complete, responsive, and functional e-commerce web application developed as an individual university **Web Programming Lab** project. Built using pure **HTML5, CSS3, Vanilla JavaScript, PHP (procedural with MySQLi), and MySQL**, running locally on **XAMPP** without external frameworks or dependencies.
 
 ---
 
 ## 1. Project Overview
 
-ShopEasy is a small online store where:
+**ShopEasy** is a lightweight, academic e-commerce solution designed to demonstrate foundational full-stack web development principles:
 
-- **Customers** can register, log in, browse and search products, filter by
-  category, view product details, add items to a shopping cart, check out using
-  **Cash on Delivery**, and see their order history.
-- **Administrators** can log in to a separate admin panel, see dashboard
-  statistics, and perform full **CRUD** (Create, Read, Update, Delete) on
-  products and categories, view all orders and change their status, and view
-  the list of registered customers.
-
-The site is intentionally kept **simple and easy to explain** for a viva.
+- **Customer Storefront:** Users can register an account, securely authenticate, explore categorized product catalogs, search items in real-time, view detailed specifications, manage dynamic shopping cart quantities, and complete purchases via Cash on Delivery (COD) with immediate inventory updates.
+- **Administration Portal:** Administrators have access to a dedicated, authenticated management dashboard providing summary analytics, full CRUD operations on products and categories, real-time order tracking with status lifecycle management, and a directory of registered customers.
 
 ---
 
-## 2. Technologies Used
+## 2. Features
 
-| Layer            | Technology                    |
-|------------------|-------------------------------|
-| Structure        | HTML5                         |
-| Styling          | CSS3 (custom, responsive, no framework) |
-| Interactivity    | Vanilla JavaScript            |
-| Server language  | PHP (procedural, MySQLi)      |
-| Database         | MySQL                         |
-| Server package   | XAMPP (Apache + MySQL)        |
-| DB admin tool    | phpMyAdmin                    |
-| Editor           | Visual Studio Code            |
+### Customer Module
+- **User Authentication:** Secure customer registration, login verification using PHP `password_verify()`, session persistence, and profile overview with order history.
+- **Product Browsing & Filtering:** Interactive catalog displaying products by category chips and keyword search queries using MySQLi prepared statements.
+- **Product Details:** Single product view featuring pricing, inventory availability badge (In Stock / Out of Stock), descriptions, and stock-clamped quantity selection.
+- **Shopping Cart:** Session-based cart (`$_SESSION['cart']`) supporting item additions, quantity updates constrained to available stock, single-item removal, subtotal calculations, and full cart clearing.
+- **Checkout & Order Placement:** Delivery details validation and atomic database transaction processing (order creation, line item insertion, and product stock decrement).
+- **Order History & Tracking:** Dedicated order list and individual order summary page displaying line items, unit prices, date, and order status.
 
-**No** React/Vue/Angular, Node.js, Laravel, Bootstrap, Firebase, cloud services
-or online payment gateways are used.
-
----
-
-## 3. How to Install XAMPP
-
-1. Download XAMPP from <https://www.apachefriends.org>.
-2. Run the installer and install it (default location is `C:\xampp`).
-3. Open the **XAMPP Control Panel**.
+### Admin Module
+- **Admin Authentication:** Secure access control protecting administrative endpoints via dedicated admin sessions (`$_SESSION['admin_id']`).
+- **Dashboard Analytics:** Real-time metrics tracking total inventory count, registered user accounts, order volume, and cumulative revenue.
+- **Product Management (CRUD):** Add new products with image upload handling, update existing items, and delete products with automatic image placeholder fallback.
+- **Category Management (CRUD):** Create, update, and remove product categories with foreign key constraints (`ON DELETE SET NULL`).
+- **Order Management:** View all incoming customer orders and transition statuses through `Pending`, `Processing`, `Completed`, and `Cancelled`.
+- **Customer Directory:** Read-only listing of all registered customer accounts and their total order counts.
 
 ---
 
-## 4. Where to Put the Project
+## 3. Technologies Used
 
-Copy the whole `ecommerce` folder into the XAMPP web root:
+| Component | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Structure** | HTML5 | Semantic markup across customer and administrative interfaces |
+| **Styling** | CSS3 | Custom responsive stylesheet with CSS Grid, Flexbox, and media queries |
+| **Interactivity** | Vanilla JavaScript | Client-side form validation, mobile navigation toggles, stock quantity constraints |
+| **Server Engine** | PHP 8.x (procedural) | Backend routing, session management, transaction logic, MySQLi prepared statements |
+| **Database** | MySQL | Relational data persistence with foreign keys and cascade rules |
+| **Environment** | XAMPP | Local web server package (Apache + MySQL / MariaDB + phpMyAdmin) |
+
+> **Note:** This project intentionally avoids heavy frontend and backend frameworks (e.g., React, Vue, Node.js, Laravel, Tailwind CSS) to showcase native web development competencies suitable for university lab examination and viva voce.
+
+---
+
+## 4. Database Structure
+
+The relational database `ecommerce_db` consists of 6 structured tables:
 
 ```
-C:\xampp\htdocs\ecommerce\
+categories (id)  ────────< products (category_id)
+                                  │ (id)
+                                  │
+users (id) ──────< orders (user_id)│
+                       │ (id)     │
+                       │          │
+                       └───< order_details >───┘
+                             (order_id, product_id)
+
+admin (id, username, password)
 ```
 
-So, for example, the home page file should be at:
-
-```
-C:\xampp\htdocs\ecommerce\index.php
-```
-
----
-
-## 5. Start Apache and MySQL
-
-In the **XAMPP Control Panel**, click **Start** next to:
-
-- **Apache**
-- **MySQL**
-
-Both should turn green.
+### Table Descriptions
+- `admin`: Stores administrative credentials (`id`, `username`, `password`).
+- `users`: Stores registered customer information (`id`, `name`, `email`, `password`, `created_at`).
+- `categories`: Stores product taxonomy (`id`, `name`).
+- `products`: Stores product listings (`id`, `category_id`, `name`, `description`, `price`, `stock`, `image`, `created_at`).
+- `orders`: Stores customer purchase orders (`id`, `user_id`, `total_amount`, `phone`, `address`, `status`, `created_at`).
+- `order_details`: Stores individual line items per order (`id`, `order_id`, `product_id`, `quantity`, `price`).
 
 ---
 
-## 6. Create / Import the Database (phpMyAdmin)
+## 5. Local Installation Guide
 
-1. Open your browser and go to: <http://localhost/phpmyadmin>
-2. Click the **Import** tab (top menu).
-3. Click **Choose File** and select the `database.sql` file from this project.
-4. Click **Go** (bottom of the page).
+### Prerequisites
+1. Download and install [XAMPP](https://www.apachefriends.org/) (PHP 7.4+ or PHP 8.x).
+2. Start the **Apache** and **MySQL** services from the XAMPP Control Panel.
 
-This automatically:
+### Installation Steps
+1. **Clone or Copy Repository:**
+   Place the project directory inside your local XAMPP `htdocs` folder:
+   ```text
+   C:\xampp\htdocs\ecommerce\
+   ```
 
-- creates the database **`ecommerce_db`**,
-- creates all tables (users, admin, categories, products, orders, order_details),
-- inserts sample data (5 categories, 19 products, and 1 admin account).
+2. **Create & Import Database:**
+   - Open phpMyAdmin in your web browser: [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+   - Click the **Import** tab.
+   - Click **Choose File** and select `database.sql` from the project root.
+   - Click **Go** at the bottom of the page.
+   *(This automatically creates `ecommerce_db`, tables, relationships, and starter demo data).*
 
-> You do **not** need to create the database manually – the SQL file does it for you.
+3. **Configure Database Connection:**
+   Open `config/database.php` and ensure the connection parameters match your local server (default XAMPP settings):
+   ```php
+   $db_host = 'localhost';
+   $db_user = 'root';
+   $db_pass = '';
+   $db_name = 'ecommerce_db';
+   ```
 
----
-
-## 7. Access the Website (Customer Side)
-
-Open:
-
-```
-http://localhost/ecommerce/
-```
-
-### Demo customer account
-You can register your own account, or log in with a ready-made one:
-
-- **Email:** `john@example.com`
-- **Password:** `password123`
-
-(Other demo customers: `sarah@example.com`, `mike@example.com` – same password.)
-
----
-
-## 8. Access the Admin Panel
-
-Open:
-
-```
-http://localhost/ecommerce/admin/
-```
-
-### Default admin credentials
-- **Username:** `admin`
-- **Password:** `admin123`
-
-> These are set in `database.sql`. The password is stored as a secure bcrypt
-> hash, not as plain text.
+4. **Launch Application:**
+   - **Customer Storefront:** [http://localhost/ecommerce/](http://localhost/ecommerce/)
+   - **Admin Login:** [http://localhost/ecommerce/admin/login.php](http://localhost/ecommerce/admin/login.php)
 
 ---
 
-## 9. Project Structure
+## 6. Administrator Demo Account
 
-```
-ecommerce/
-│
-├── index.php                # Home page (hero, categories, featured products)
-├── products.php             # All products + search + category filter
-├── product-details.php      # Single product + quantity + add to cart
-├── cart.php                 # Shopping cart (add/update/remove/clear)
-├── checkout.php             # Checkout + place order (Cash on Delivery)
-├── order-confirmation.php   # "Thank you" page after ordering
-├── login.php                # Customer login
-├── register.php             # Customer registration
-├── logout.php               # Customer logout
-├── account.php              # Customer profile + recent orders
-├── orders.php               # Customer order history + order details
-├── about.php                # About page
-├── contact.php              # Contact form
-│
-├── config/
-│   └── database.php         # MySQL connection (MySQLi)
-│
-├── includes/
-│   ├── functions.php        # Helpers + session + cart helpers + product card
-│   ├── auth.php             # Customer login helpers
-│   ├── header.php           # Navigation bar (shared)
-│   └── footer.php           # Footer (shared)
-│
-├── css/
-│   └── style.css            # All styling (responsive, media queries)
-│
-├── js/
-│   └── script.js            # Menu toggle, form validation, quantity limits
-│
-├── images/                  # Product images (SVG placeholders)
-│
-├── admin/
-│   ├── index.php            # Admin dashboard (statistics)
-│   ├── login.php            # Admin login
-│   ├── logout.php           # Admin logout
-│   ├── products.php         # Product list
-│   ├── add-product.php      # Add product (with image upload)
-│   ├── edit-product.php     # Edit product
-│   ├── delete-product.php   # Delete product
-│   ├── categories.php       # Category CRUD
-│   ├── orders.php           # Order list + details + status change
-│   ├── customers.php        # Customer list
-│   └── includes/
-│       ├── admin-auth.php   # Admin login helpers
-│       ├── admin-header.php # Admin top bar + sidebar
-│       └── admin-footer.php # Admin footer
-│
-├── database.sql             # Database + tables + sample data
-└── README.md                # This file
-```
+> [!IMPORTANT]
+> **Academic / Demonstration Account:**
+> - **Username:** `admin`
+> - **Password:** `admin000`
+>
+> *(The password is stored securely in MySQL using a standard bcrypt hash via `password_hash()`, verified via `password_verify()`).*
 
 ---
 
-## 10. How Each Part Works (for the viva)
+## 7. Screenshots
 
-**Frontend:** HTML is written inside the PHP pages. `css/style.css` styles
-everything and uses **media queries** so the site works on desktop, laptop,
-tablet and mobile. `js/script.js` adds the mobile menu, client-side form
-validation and keeps quantities within stock.
+*(Screenshots can be added to an `/assets/screenshots` folder for demonstration)*
 
-**PHP ↔ MySQL:** `config/database.php` opens a MySQLi connection to
-`ecommerce_db`. Every page that needs data includes this file and runs queries
-using **prepared statements** (`prepare()` + `bind_param()`), which prevents SQL
-injection.
-
-**Registration/Login:** Passwords are hashed with `password_hash()` on register
-and checked with `password_verify()` on login. After a successful login the user
-is stored in a **PHP session** (`$_SESSION`), which is how the site remembers who
-is logged in across pages.
-
-**Sessions:** `session_start()` runs in `includes/functions.php`. The customer
-session uses `user_id`; the admin session uses `admin_id`. They are separate, so
-being a customer does not make you an admin.
-
-**Products:** Products live in the `products` table and each belongs to a
-category (`category_id` foreign key). Admins add/edit/delete them via CRUD pages.
-
-**Shopping cart:** The cart is stored in the session as a simple array
-`$_SESSION['cart'] = [ product_id => quantity ]`. This is the simplest reliable
-approach and needs no extra table. Quantities can never exceed the product stock.
-
-**Orders:** At checkout the order is saved in `orders`, each item in
-`order_details`, and product stock is reduced – all inside a **transaction** so it
-either fully succeeds or fully rolls back. Then the cart is emptied.
-
-**Admin panel:** A separate `/admin` section protected by an admin session. It
-shows dashboard statistics and provides CRUD for products/categories, order
-status management and a customer list.
-
-**Table relationships:**
-- `products.category_id` → `categories.id`
-- `orders.user_id` → `users.id`
-- `order_details.order_id` → `orders.id`
-- `order_details.product_id` → `products.id`
+| Interface | Description | Placeholder |
+| :--- | :--- | :--- |
+| **Homepage** | Hero banner, categories, featured products | `![Homepage](screenshots/homepage.png)` |
+| **Products Catalog** | Filterable product grid with live search | `![Products](screenshots/products.png)` |
+| **Product Details** | Full description, stock count, add-to-cart | `![Product Details](screenshots/product_details.png)` |
+| **Shopping Cart** | Item management, quantity controls, totals | `![Cart](screenshots/cart.png)` |
+| **Customer Login** | Secure customer authentication | `![Login](screenshots/login.png)` |
+| **Admin Dashboard** | Statistics overview and recent order cards | `![Admin Dashboard](screenshots/admin_dashboard.png)` |
+| **Product Management** | Product listing table with Add/Edit/Delete | `![Product Management](screenshots/admin_products.png)` |
+| **Order Management** | Order listing and status updates | `![Order Management](screenshots/admin_orders.png)` |
 
 ---
 
-## 11. Security Practices Used
+## 8. Security Implementations
 
-- PHP **sessions** for authentication (customer and admin).
-- `password_hash()` / `password_verify()` – passwords are never stored as text.
-- **Prepared statements** for all database queries.
-- Input validation in both **JavaScript** (browser) and **PHP** (server).
-- `htmlspecialchars()` (via the `e()` helper) on all output to prevent XSS.
-- Admin pages call `require_admin_login()`, so they cannot be opened without
-  logging in.
+- **SQL Injection Prevention:** 100% of dynamic database queries use MySQLi prepared statements (`prepare()` and `bind_param()`).
+- **Cross-Site Scripting (XSS) Mitigation:** Output sanitization using the custom `e()` helper function wrapping `htmlspecialchars(..., ENT_QUOTES, 'UTF-8')`.
+- **Password Security:** Cryptographic password hashing utilizing PHP's native `password_hash($password, PASSWORD_DEFAULT)` and `password_verify()`.
+- **Session Protection:** Segregated sessions for customers (`user_id`) and administrators (`admin_id`), with strict authentication guards (`require_login()` and `require_admin_login()`).
+- **Transactional Integrity:** ACID-compliant database transactions (`begin_transaction`, `commit`, `rollback`) protecting multi-step checkout processes.
 
 ---
 
-## 12. Quick Test Checklist
+## 9. Online Deployment (Hosting)
 
-**Customer:** register → login → browse → search → filter by category →
-open product → add to cart → update/remove in cart → checkout →
-see confirmation → view order history → logout.
+To deploy this project to an online PHP/MySQL web host (such as cPanel or Apache VPS):
 
-**Admin:** login (`admin` / `admin123`) → dashboard → add/edit/delete product →
-add/edit/delete category → view orders → change order status → view customers.
-
----
-
-## 13. Common Problems
-
-| Problem | Fix |
-|--------|-----|
-| "Database connection failed" | Start **MySQL** in XAMPP and import `database.sql`. |
-| Page shows PHP code as text | Open the site through `http://localhost/...`, not by double-clicking the file. |
-| Images not showing | Make sure the `images` folder was copied. A placeholder is shown automatically if an image is missing. |
-| Admin page redirects to login | That is correct – log in at `http://localhost/ecommerce/admin/`. |
+1. **Upload Files:** Upload the repository files to `public_html` or a designated subdomain folder.
+2. **Import Database:** Create a MySQL database in cPanel MySQL Database Wizard, open phpMyAdmin online, and import `database.sql`.
+3. **Set Database Credentials:**
+   Update `config/database.php` with your hosting credentials or configure server environment variables:
+   - `DB_HOST`: Hostname (usually `localhost`)
+   - `DB_USER`: Database username (e.g. `u123456_ecom`)
+   - `DB_PASS`: Database password
+   - `DB_NAME`: Database name (e.g. `u123456_ecommerce_db`)
+4. **File Permissions:** Ensure the `images/` directory has write permissions (`755` or `775`) for product image uploads.
 
 ---
 
-*This project is for educational purposes only. It is not a real store and takes
-no real payments.*
+## 10. Future Improvements
+
+- Integration of real-time online payment gateways (e.g. Stripe, SSLCommerz, PayPal).
+- Customer product review and star rating system.
+- Customer wishlist and saved-for-later items.
+- Automated email order confirmations via PHPMailer / SMTP.
+- Customer order tracking timeline and shipment status.
+- Admin pagination and multi-criteria product filtering.
+
+---
+
+## 11. Academic License & Disclaimer
+
+This project was built for educational and academic submission purposes as part of a university Web Programming curriculum. It is intended for coursework demonstration and evaluation.

@@ -51,14 +51,14 @@ ALTER TABLE orders
 --  3. Secure the admin password
 --  The password was stored as the plain text "123456", which
 --  password_verify() can never match. The value below is the
---  bcrypt hash of "123456" produced by PHP password_hash().
+--  bcrypt hash of "admin000" produced by PHP password_hash().
 --
---  The login details DO NOT CHANGE:
+--  The login details:
 --      Username: admin
---      Password: 123456
+--      Password: admin000
 -- ------------------------------------------------------------
 UPDATE admin
-SET password = '$2y$10$NxC.YrNM2k/jeYwRBatvNejq3LrhQdgp27rw7PT03asfhrkImg3/q'
+SET password = '$2y$12$qkcuX0ahrjn9qBHX5M6Tvu9EvWZ4kyCyM/WJETN8DH4Rz6tbSBw52'
 WHERE username = 'admin';
 
 -- ------------------------------------------------------------
