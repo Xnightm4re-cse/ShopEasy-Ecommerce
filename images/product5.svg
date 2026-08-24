@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="400" viewBox="0 0 500 400">
+  <rect width="500" height="400" fill="#2563eb"/>
+  <circle cx="250" cy="160" r="80" fill="#ffffff" opacity="0.18"/>
+  <text x="250" y="172" font-family="Segoe UI, Arial, sans-serif" font-size="60" fill="#ffffff" text-anchor="middle" font-weight="bold">&#128230;</text>
+  <text x="250" y="300" font-family="Segoe UI, Arial, sans-serif" font-size="26" fill="#ffffff" text-anchor="middle" font-weight="bold">Wireless Mouse</text>
+  <text x="250" y="340" font-family="Segoe UI, Arial, sans-serif" font-size="16" fill="#ffffff" text-anchor="middle" opacity="0.85">ShopEasy</text>
+</svg>
